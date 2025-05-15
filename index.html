@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Adaptive Lighting</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Home Dashboard -->
+    <section id="home-view" class="view active" aria-label="Home Dashboard">
+      <header class="view-header">
+        <h1>Welcome back, Kairo</h1>
+        <button class="help-btn" aria-label="Help">?</button>
+      </header>
+      <div class="room-cards"></div>
+    </section>
+
+    <!-- Rooms Overview -->
+    <section id="rooms-view" class="view" aria-label="Rooms Overview">
+      <header class="view-header">
+        <button class="back-btn" aria-label="Go back to previous view">
+          <span class="back-icon">←</span>
+          <span class="visually-hidden">Back</span>
+        </button>
+        <h1>Rooms</h1>
+        <button class="help-btn" aria-label="Help">?</button>
+      </header>
+      <div class="room-search">
+        <input
+          type="search"
+          id="room-search-input"
+          placeholder="Search rooms…"
+        />
+        <button aria-label="Search">🔍</button>
+      </div>
+      <ul class="room-list"></ul>
+    </section>
+
+    <!-- Savings -->
+    <section id="savings-view" class="view" aria-label="Savings">
+      <header class="view-header">
+        <button class="back-btn" aria-label="Go back to previous view">
+          <span class="back-icon">←</span>
+          <span class="visually-hidden">Back</span>
+        </button>
+        <h1>Savings</h1>
+        <button class="help-btn" aria-label="Help">?</button>
+      </header>
+      <div class="savings-summary">
+        <p>This Week’s Savings: <strong>– kWh</strong></p>
+      </div>
+      <div class="savings-chart"><span>Chart here</span></div>
+      <div class="eco-tips">
+        <h2>Eco Tips</h2>
+        <ul></ul>
+      </div>
+    </section>
+
+    <!-- Schedule -->
+    <section id="schedule-view" class="view" aria-label="Schedule">
+      <header class="view-header">
+        <button class="back-btn" aria-label="Go back to previous view">
+          <span class="back-icon">←</span>
+          <span class="visually-hidden">Back</span>
+        </button>
+        <h1>Schedule</h1>
+        <button class="help-btn" aria-label="Help">?</button>
+      </header>
+      <table class="schedule-table" aria-label="Lighting Schedule">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>On Time</th>
+            <th>Mode</th>
+            <th>Off Time</th>
+            <th>Edit</th>
+            <th>Toggle</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="schedule-controls">
+        <button id="add-slot-btn">+ Add New Slot</button>
+        <button id="apply-weekdays-btn">Apply to All Weekdays</button>
+        <button id="clear-all-btn">Clear All</button>
+        <button id="save-schedule-btn">Save All Changes</button>
+      </div>
+    </section>
+
+    <!-- Room Control -->
+    <section id="room-control-view" class="view" aria-label="Room Control">
+      <div class="overlay"></div>
+      <div class="control-sheet">
+        <header class="control-header">
+          <button class="back-btn" aria-label="Go back to previous view">
+            <span class="back-icon">←</span>
+            <span class="visually-hidden">Back</span>
+          </button>
+          <h1 id="control-room-name">Room Name</h1>
+          <button class="help-btn" aria-label="Help">?</button>
+        </header>
+        <div class="control-body">
+          <div class="control-row">
+            <label for="brightness-range">Brightness</label>
+            <input type="range" id="brightness-range" min="0" max="100" />
+          </div>
+          <div class="control-row">
+            <label for="temp-range">Colour Temperature</label>
+            <input type="range" id="temp-range" min="2000" max="6500" />
+          </div>
+          <div class="control-row">
+            <label for="mode-select">Lighting Mode</label>
+            <select id="mode-select">
+              <option>Dimmed Warm</option>
+              <option>Cool White</option>
+              <option>Productivity</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <label for="occupancy-toggle">Auto-Detect Occupancy</label>
+            <input type="checkbox" id="occupancy-toggle" />
+          </div>
+        </div>
+        <footer class="control-footer">
+          <button id="apply-btn">Apply</button>
+          <button id="save-btn">Save</button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button data-view="home-view" aria-label="Home">🏠</button>
+      <button data-view="rooms-view" aria-label="Rooms">🛏️</button>
+      <button data-view="savings-view" aria-label="Savings">💡</button>
+      <button data-view="schedule-view" aria-label="Schedule">📅</button>
+    </nav>
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Modal Dialog Template -->
+    <div class="modal-backdrop" id="modal-container">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title">Modal Title</h2>
+          <button id="modal-close" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body">Modal content goes here</div>
+        <div class="modal-footer" id="modal-footer">
+          <button class="btn-secondary" id="modal-cancel">Cancel</button>
+          <button class="btn-primary" id="modal-confirm">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Room Control Modal -->
+    <div class="modal-overlay" id="room-control-modal" style="display: none">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <h2 id="room-modal-title">Room Settings</h2>
+          <button id="room-modal-close" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="control-row">
+            <label for="modal-brightness-range">Brightness</label>
+            <input type="range" id="modal-brightness-range" min="0" max="100" />
+          </div>
+          <div class="control-row">
+            <label for="modal-temp-range">Colour Temperature</label>
+            <input type="range" id="modal-temp-range" min="2000" max="6500" />
+          </div>
+          <div class="control-row">
+            <label for="modal-mode-select">Lighting Mode</label>
+            <select id="modal-mode-select">
+              <option>Dimmed Warm</option>
+              <option>Cool White</option>
+              <option>Productivity</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <label for="modal-occupancy-toggle">Auto-Detect Occupancy</label>
+            <div class="toggle-container">
+              <label class="switch">
+                <input type="checkbox" id="modal-occupancy-toggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="modal-cancel-btn" class="btn-secondary">Cancel</button>
+          <button id="modal-apply-btn" class="btn-primary">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1196 @@
+/* Theme Variables */
+:root {
+  /* Light mode (default) variables */
+  --background: #fafafa;
+  --surface: #ffffff;
+  --text: #222222;
+  --muted-text: #555555;
+  --border: #ddd;
+  --accent: #007bff;
+  --accent-hover: #0056b3;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --edit-color: #3498db; /* Blue for edit */
+  --save-color: #2ecc71; /* Green for save */
+  --unsaved-color: #e74c3c; /* Red for unsaved changes */
+  --success: #2ecc71; /* Green for success messages */
+  --warning: #f39c12; /* Orange for warnings */
+  --error: #e74c3c; /* Red for errors */
+  --info: #3498db; /* Blue for information messages */
+  --animation-speed: 0.3s; /* Standard animation speed */
+
+  /* Toggle Switch Variables */
+  --toggle-width: 60px;
+  --toggle-height: 30px;
+  --toggle-padding: 4px;
+  --toggle-off-color: #e74c3c; /* Red for off state */
+  --toggle-on-color: #2ecc71; /* Green for on state */
+  --toggle-transition: all 0.3s ease;
+
+  /* Theme transition */
+  --theme-transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark mode theme variables */
+:root.dark-theme {
+  --background: #1e1e1e;
+  --surface: #2a2a2a;
+  --text: #eeeeee;
+  --muted-text: #cccccc;
+  --border: #444444;
+  --accent: #4aa8ff;
+  --accent-hover: #367eda;
+  --edit-color: #3498db;
+  --save-color: #2ecc71;
+  --unsaved-color: #e74c3c;
+  --card-shadow: rgba(0, 0, 0, 0.6);
+  --success: #2ecc71;
+  --warning: #f1c40f;
+  --error: #e74c3c;
+  --info: #3498db;
+
+  --toggle-off-color: #e74c3c;
+  --toggle-on-color: #2ecc71;
+}
+
+/* System preference based dark mode (only applies if user hasn't set a preference) */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light-theme):not(.dark-theme) {
+    --background: #1e1e1e;
+    --surface: #2a2a2a;
+    --text: #eeeeee;
+    --muted-text: #cccccc;
+    --border: #444444;
+    --accent: #4aa8ff;
+    --accent-hover: #367eda;
+    --edit-color: #3498db;
+    --save-color: #2ecc71;
+    --unsaved-color: #e74c3c;
+    --card-shadow: rgba(0, 0, 0, 0.6);
+    --success: #2ecc71;
+    --warning: #f1c40f;
+    --error: #e74c3c;
+    --info: #3498db;
+  }
+}
+
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.4;
+  color: var(--text);
+  background: var(--background);
+  padding-bottom: 60px;
+  transition: var(--theme-transition);
+}
+
+/* View Management */
+.view {
+  display: none;
+  padding: 16px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, var(--theme-transition);
+  will-change: opacity, transform;
+}
+
+.view.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Headers */
+.view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.view-header h1 {
+  font-size: 1.2rem;
+}
+.view-header button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* Room Cards Mobile (horizontal carousel) */
+/* Column wrapper for grouped cards */
+.card-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 0 0 30%;
+  scroll-snap-align: start;
+}
+
+.room-cards {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 1rem !important;
+  overflow-x: auto !important;
+  scroll-snap-type: x mandatory !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 1rem 0 !important;
+}
+.room-cards::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Card Stack for Eco & Settings */
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 0 0 20%;
+  max-width: 20%;
+  height: 60vh;
+  gap: 1rem;
+}
+
+/* Room Card Base */
+.room-card {
+  flex: 0 0 25%;
+  max-width: 25%;
+  height: 60vh;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+/* Eco & Settings use half height and stack */
+.eco-card,
+.settings-card {
+  flex: 1;
+  height: 50%;
+  max-height: 50%;
+}
+.room-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px var(--card-shadow);
+}
+
+/* Eco Card Styling */
+.eco-card {
+  background: linear-gradient(to bottom right, #a6d3a0, #67a657);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.eco-card .card-header h2 {
+  color: #fff;
+  font-weight: 600;
+}
+
+.eco-card .card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.eco-card p {
+  font-size: 14px;
+  text-align: center;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Card Header */
+.card-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+/* Lighting Mode Text */
+.lighting-mode {
+  margin-bottom: 8px;
+}
+.mode-label {
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+.mode-value {
+  font-style: italic;
+  color: var(--text);
+}
+
+/* Icons */
+.icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-block;
+  opacity: 0.4;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  color: var(--muted-text);
+}
+.icon.active {
+  opacity: 1;
+  color: var(--accent);
+}
+
+/* Buttons in Cards */
+.room-card button {
+  background-color: var(--accent);
+  color: var(--surface);
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.room-card button:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+.room-card button:active {
+  transform: translateY(0);
+}
+
+/* Settings / Add / More Cards */
+.settings-card .settings-btn,
+.add-card #add-room-btn,
+.more-card #more-rooms-btn {
+  width: 100%;
+  padding: 20px 0;
+  font-size: 1rem;
+  background: var(--surface);
+  color: var(--text);
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.settings-card .settings-btn:hover,
+.add-card #add-room-btn:hover,
+.more-card #more-rooms-btn:hover {
+  background-color: var(--border);
+  box-shadow: 0 2px 6px var(--card-shadow);
+}
+
+/* Room List View */
+.room-search {
+  display: flex;
+  margin-bottom: 12px;
+}
+.room-search input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px 0 0 4px;
+}
+.room-search button {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  background: var(--surface);
+  cursor: pointer;
+}
+.room-list {
+  list-style: none;
+}
+.room-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.room-item label {
+  flex: 1;
+  margin-left: 8px;
+  color: var(--text);
+}
+.room-item .lighting-mode {
+  font-size: 0.9rem;
+  color: var(--muted-text);
+  margin-right: 8px;
+}
+.room-item .adjust-btn {
+  background-color: var(--accent);
+  color: var(--surface);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.room-item .adjust-btn:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Savings View */
+.savings-summary {
+  margin-bottom: 16px;
+  font-size: 1rem;
+  color: var(--text);
+}
+.savings-chart {
+  height: auto !important;
+  padding: 8px !important;
+}
+.eco-tips h2 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.eco-tips ul {
+  list-style: disc inside;
+  color: var(--text);
+}
+
+/* Savings Chart Styling */
+.chart {
+  height: 120px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 8px;
+  gap: 8px;
+}
+
+.chart-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.bar-fill {
+  width: 100%;
+  background: var(--accent);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease;
+  min-height: 4px;
+}
+
+.bar-label {
+  font-size: 0.75rem;
+  color: var(--muted-text);
+}
+
+/* Schedule View */
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.schedule-table th,
+.schedule-table td {
+  border: 1px solid var(--border);
+  padding: 8px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+/* Edit and Save buttons */
+.edit-btn {
+  background-color: var(--edit-color, #3498db);
+}
+
+.save-slot-btn {
+  background-color: var(--save-color, #2ecc71);
+}
+
+/* New schedule row styling */
+.new-schedule-row {
+  background-color: rgba(
+    52,
+    152,
+    219,
+    0.1
+  ); /* Light blue background for new rows */
+}
+.schedule-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.schedule-controls button {
+  flex: 1;
+  background-color: var(--accent);
+  color: var(--surface);
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.schedule-controls button:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 16px 0;
+}
+.bottom-nav button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--muted-text);
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+.bottom-nav button:hover,
+.bottom-nav button:focus {
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+.bottom-nav button.active {
+  border-top: 3px solid var(--accent);
+  padding-top: calc(16px - 3px);
+  color: var(--accent);
+}
+
+/* Larger Screens */
+@media (min-width: 600px) {
+  .room-card {
+    flex: 1 1 calc(33.333% - 12px);
+  }
+}
+
+/* Room Control Overlay */
+#room-control-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+#room-control-view.active {
+  display: flex;
+}
+#room-control-view .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+#room-control-view .control-sheet {
+  position: relative;
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 16px;
+  width: 90%;
+  max-width: 400px;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+}
+.control-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* Improved back button styling */
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: none;
+  color: var(--text);
+  border: none;
+  transition: transform 0.2s, background-color 0.2s, color 0.2s;
+  padding: 0;
+}
+
+.back-btn:hover,
+.back-btn:focus {
+  color: var(--accent);
+  transform: translateX(-3px);
+  background-color: rgba(0, 0, 0, 0.05);
+  outline: none;
+}
+
+.back-btn:active {
+  transform: translateX(-5px);
+}
+
+.back-btn .back-icon {
+  font-size: 22px;
+}
+
+/* Ripple effect for touch feedback */
+.back-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.back-btn .ripple {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin-top: -50px;
+  margin-left: -50px;
+  animation: ripple 0.6s linear;
+  transform: scale(0);
+  opacity: 1;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Hide text visually but keep for screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.control-body .control-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+.control-body .control-row label {
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.control-body .control-row input[type="range"] {
+  width: 100%;
+}
+.control-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+.control-footer button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#apply-btn {
+  background: var(--border);
+  color: var(--text);
+}
+#save-btn,
+#save-schedule-btn.unsaved {
+  background: var(--accent);
+  color: var(--surface);
+}
+
+/* Unsaved changes styling */
+#save-schedule-btn.unsaved {
+  background-color: var(--unsaved-color, #e74c3c);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+/* Animate Control Sheet & Blur Backdrop */
+#room-control-view .overlay {
+  backdrop-filter: blur(4px);
+}
+.control-sheet {
+  opacity: 0;
+  transform: scale(0.9) translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+#room-control-view.active .control-sheet {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* Range Sliders Styling */
+.control-body input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #f0f0f0, #cacaca);
+  outline: none;
+  margin: 8px 0;
+}
+.control-body input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  cursor: pointer;
+}
+
+/* Typography Refinements */
+.view-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.card-header h2 {
+  font-size: 1.2rem;
+  letter-spacing: 0.5px;
+}
+.adjust-btn {
+  letter-spacing: 0.5px;
+}
+
+/* Modal Dialog */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 0.3s, opacity 0.3s ease;
+}
+
+.modal-backdrop.visible {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear, opacity 0.3s ease;
+}
+
+.modal-content {
+  background-color: var(--surface);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transform: scale(0.9);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-backdrop.visible .modal-content {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.modal-body {
+  margin-bottom: 24px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-footer button {
+  padding: 8px 16px;
+}
+
+/* Button variants */
+.btn-primary {
+  background-color: var(--accent);
+  color: white;
+}
+
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-danger {
+  background-color: var(--error);
+  color: white;
+}
+
+/* Mobile-style Horizontal Carousel */
+.room-cards {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 1rem !important;
+  overflow-x: auto !important;
+  scroll-snap-type: x mandatory !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 1rem 0 !important;
+  position: relative;
+  min-height: 250px;
+}
+.room-cards::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Loading States */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+  position: relative;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+  border-radius: 8px;
+}
+
+.loader {
+  width: 40px;
+  height: 40px;
+  color: var(--accent);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Skeleton loading placeholders */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface) 0%,
+    var(--border) 50%,
+    var(--surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-card {
+  height: 180px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.skeleton-text {
+  height: 14px;
+  margin-bottom: 8px;
+  width: 80%;
+}
+
+.skeleton-title {
+  height: 20px;
+  margin-bottom: 16px;
+  width: 60%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Button loading states */
+.saving-indicator {
+  display: inline-flex;
+  align-items: center;
+}
+
+.saving-indicator::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  margin-left: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* Form input styles for modals */
+.modal-body input[type="text"],
+.modal-body input[type="number"],
+.modal-body select {
+  width: 100%;
+  padding: 8px 12px;
+  margin: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background-color: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+}
+
+.modal-body label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.full-width {
+  width: 100% !important;
+}
+/* Each card gets its own column */
+.room-card,
+.eco-card,
+.settings-card,
+.add-card,
+.more-card {
+  flex: 0 0 30% !important;
+  max-width: 30% !important;
+  scroll-snap-align: start !important;
+}
+
+/* Lighting Preview */
+.lighting-preview {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  transition: text-shadow 0.5s ease, opacity 0.5s ease;
+}
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
+  max-width: 90%;
+}
+
+.toast {
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s ease, fadeOut 0.3s ease 4.7s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+}
+
+.toast.success {
+  background-color: var(--success);
+}
+.toast.error {
+  background-color: var(--error);
+}
+.toast.warning {
+  background-color: var(--warning);
+  color: #333;
+}
+.toast.info {
+  background-color: var(--info);
+}
+
+.toast .message {
+  flex-grow: 1;
+  margin-right: 8px;
+}
+
+.toast .close-btn {
+  background: transparent;
+  color: inherit;
+  border: none;
+  font-size: 16px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.toast .close-btn:hover {
+  opacity: 1;
+}
+
+.toast .progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.4);
+  width: 100%;
+  transform-origin: left;
+  animation: progress 5s linear;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* Room Control Modal Overlay */
+.room-control-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+/* New modal overlay styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+  transition: opacity 0.3s ease;
+}
+
+.modal-sheet {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalIn 0.3s ease forwards;
+}
+
+.modal-sheet {
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  padding: 20px;
+  width: 90vw;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  animation: modalIn 0.25s cubic-bezier(0.4, 1.4, 0.6, 1) both;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.blurred {
+  filter: blur(5px) grayscale(0.1) brightness(0.95);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Toggle Switch Styles */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--toggle-off-color);
+  transition: var(--toggle-transition);
+  border-radius: var(--toggle-height);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: calc(var(--toggle-height) - (var(--toggle-padding) * 2));
+  width: calc(var(--toggle-height) - (var(--toggle-padding) * 2));
+  left: var(--toggle-padding);
+  bottom: var(--toggle-padding);
+  background-color: white;
+  border-radius: 50%;
+  transition: var(--toggle-transition);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+input:checked + .slider {
+  background-color: var(--toggle-on-color);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--toggle-on-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(calc(var(--toggle-width) - var(--toggle-height)));
+}
+
+.slider::after {
+  content: "OFF";
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  padding-right: 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+input:checked + .slider::after {
+  content: "ON";
+  justify-content: flex-start;
+  padding-left: 8px;
+  padding-right: 0;
+}
