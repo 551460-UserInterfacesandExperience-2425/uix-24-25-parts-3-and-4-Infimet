@@ -1,9 +1,35 @@
-/* Eco slider - changes from red to green */
+/* Eco slider - minimalistic design */
 .eco-slider {
-  background-color: #f44336;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  background-color: #e0e0e0;
+  border-radius: 34px;
+  width: 48px;
+  height: 24px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input:checked + .eco-slider {
   background-color: #4caf50;
+}
+
+.eco-slider:before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:checked + .eco-slider:before {
+  transform: translateX(24px);
+}
+
+/* Focus state */
+input:focus + .eco-slider {
+  box-shadow: 0 0 2px #4caf50;
 }

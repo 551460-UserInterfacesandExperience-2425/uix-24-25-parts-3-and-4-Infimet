@@ -19,12 +19,12 @@
   --animation-speed: 0.3s; /* Standard animation speed */
 
   /* Toggle Switch Variables */
-  --toggle-width: 60px;
-  --toggle-height: 30px;
-  --toggle-padding: 4px;
-  --toggle-off-color: #e74c3c; /* Red for off state */
-  --toggle-on-color: #2ecc71; /* Green for on state */
-  --toggle-transition: all 0.3s ease;
+  --toggle-width: 48px;
+  --toggle-height: 24px;
+  --toggle-padding: 2px;
+  --toggle-on-color: #4caf50;
+  --toggle-off-color: #e0e0e0;
+  --toggle-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Theme transition */
   --theme-transition: background-color 0.3s ease, color 0.3s ease,
@@ -1145,10 +1145,10 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--toggle-off-color);
-  transition: var(--toggle-transition);
+  background-color: #e0e0e0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: var(--toggle-height);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .slider:before {
@@ -1160,7 +1160,7 @@ body {
   bottom: var(--toggle-padding);
   background-color: white;
   border-radius: 50%;
-  transition: var(--toggle-transition);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
 }
 
@@ -1169,28 +1169,9 @@ input:checked + .slider {
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px var(--toggle-on-color);
+  box-shadow: 0 0 2px var(--toggle-on-color);
 }
 
 input:checked + .slider:before {
   transform: translateX(calc(var(--toggle-width) - var(--toggle-height)));
-}
-
-.slider::after {
-  content: "OFF";
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
-  padding-right: 8px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-input:checked + .slider::after {
-  content: "ON";
-  justify-content: flex-start;
-  padding-left: 8px;
-  padding-right: 0;
 }
