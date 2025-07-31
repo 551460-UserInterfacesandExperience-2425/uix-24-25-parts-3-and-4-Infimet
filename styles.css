@@ -127,27 +127,18 @@ body {
   cursor: pointer;
 }
 
-/* Room Cards Mobile (horizontal carousel) */
-/* Column wrapper for grouped cards */
-.card-column {
-  display: flex;
-  flex-direction: column;
+/* Main content grid */
+#home-view .content-grid {
+  display: grid;
+  grid-template-columns: 20% 1fr; /* Sidebar stack and main cards */
   gap: 1rem;
-  flex: 0 0 30%;
-  scroll-snap-align: start;
+  align-items: start;
 }
 
-.room-cards {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 1rem !important;
-  overflow-x: auto !important;
-  scroll-snap-type: x mandatory !important;
-  -webkit-overflow-scrolling: touch !important;
-  padding: 1rem 0 !important;
-}
-.room-cards::-webkit-scrollbar {
-  display: none !important;
+#home-view .room-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
 }
 
 /* Card Stack for Eco & Settings */
@@ -155,16 +146,14 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex: 0 0 20%;
-  max-width: 20%;
   height: 60vh;
   gap: 1rem;
+  position: sticky;
+  top: 1rem;
 }
 
 /* Room Card Base */
 .room-card {
-  flex: 0 0 25%;
-  max-width: 25%;
   height: 60vh;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -180,7 +169,7 @@ body {
 .settings-card {
   flex: 1;
   height: 50%;
-  max-height: 50%;
+  max-height: calc(30vh - 0.5rem);
 }
 .room-card:hover {
   transform: translateY(-4px);
