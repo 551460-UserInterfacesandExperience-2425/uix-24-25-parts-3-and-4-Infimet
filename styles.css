@@ -127,49 +127,66 @@ body {
   cursor: pointer;
 }
 
-/* Main content grid */
-#home-view .content-grid {
+/* Home View Layout - CSS Grid System */
+#home-view {
   display: grid;
-  grid-template-columns: 20% 1fr; /* Sidebar stack and main cards */
-  gap: 1rem;
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem;
   align-items: start;
+  grid-template-areas: 
+    "header header"
+    "sidebar main";
 }
 
-#home-view .room-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+/* Header spans full width */
+#home-view .view-header {
+  grid-area: header;
+  margin-bottom: 0;
 }
 
-/* Card Stack for Eco & Settings */
+/* Left sidebar stack for Eco & Settings */
 .card-stack {
+  grid-area: sidebar;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 60vh;
   gap: 1rem;
   position: sticky;
   top: 1rem;
+  max-height: calc(100vh - 120px);
 }
 
-/* Room Card Base */
+/* Main content area for room cards */
+.room-cards {
+  grid-area: main;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 0;
+  min-height: 300px;
+}
+
+/* Hide scrollbar but keep functionality */
+/* Room Card Base - Consistent Styling */
 .room-card {
-  height: 60vh;
+  width: 100%;
+  height: 280px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px;
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-/* Eco & Settings use half height and stack */
-.eco-card,
-.settings-card {
-  flex: 1;
-  height: 50%;
-  max-height: calc(30vh - 0.5rem);
+
+/* Eco & Settings cards sizing for sidebar */
+.card-stack .eco-card,
+.card-stack .settings-card {
+  height: 140px;
+  min-height: 140px;
 }
 .room-card:hover {
   transform: translateY(-4px);
@@ -258,25 +275,43 @@ body {
   transform: translateY(0);
 }
 
-/* Settings / Add / More Cards */
-.settings-card .settings-btn,
-.add-card #add-room-btn,
-.more-card #more-rooms-btn {
+/* Settings Card Button Styling */
+.settings-card .settings-btn {
   width: 100%;
-  padding: 20px 0;
+  height: 100%;
   font-size: 1rem;
   background: var(--surface);
   color: var(--text);
   border: 2px dashed var(--border);
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
-.settings-card .settings-btn:hover,
-.add-card #add-room-btn:hover,
-.more-card #more-rooms-btn:hover {
-  background-color: var(--border);
+
+.settings-card .settings-btn:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  border-color: var(--accent);
   box-shadow: 0 2px 6px var(--card-shadow);
+}
+
+/* Add Room Card Styling */
+.add-card #add-room-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.add-card #add-room-btn:hover {
+  color: var(--accent-hover);
+  transform: scale(1.05);
 }
 
 /* Room List View */
@@ -333,34 +368,96 @@ body {
   transform: translateY(-1px);
 }
 
-/* Savings View */
-.savings-summary {
+/* Savings View Layout */
+#savings-view {
+  padding-top: 16px;
+  align-items: flex-start;
+}
+
+#savings-view .view-header {
   margin-bottom: 16px;
-  font-size: 1rem;
-  color: var(--text);
 }
+
+/* Enhanced Savings View Styling */
+.savings-summary {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  color: var(--text);
+  padding: 16px;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .savings-chart {
-  height: auto !important;
-  padding: 8px !important;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
+
+.eco-tips {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .eco-tips h2 {
-  font-size: 1rem;
-  margin-bottom: 8px;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
   color: var(--text);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
 }
+
 .eco-tips ul {
-  list-style: disc inside;
+  list-style: none;
   color: var(--text);
 }
 
-/* Savings Chart Styling */
+.eco-tips li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  padding-left: 24px;
+}
+
+.eco-tips li:last-child {
+  border-bottom: none;
+}
+
+.eco-tips li:before {
+  content: "💡";
+  position: absolute;
+  left: 0;
+  top: 8px;
+}
+
+/* Enhanced Savings Chart Styling */
 .chart {
-  height: 120px;
+  height: 200px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 8px;
-  gap: 8px;
+  padding: 20px;
+  gap: 12px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  position: relative;
+}
+
+.chart:before {
+  content: "Energy Savings (kWh)";
+  position: absolute;
+  top: 8px;
+  left: 20px;
+  font-size: 0.9rem;
+  color: var(--muted-text);
+  font-weight: 600;
 }
 
 .chart-bar {
@@ -368,20 +465,83 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  position: relative;
 }
 
 .bar-fill {
   width: 100%;
-  background: var(--accent);
-  border-radius: 4px 4px 0 0;
-  transition: height 0.5s ease;
-  min-height: 4px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+  border-radius: 6px 6px 0 0;
+  transition: height 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  min-height: 8px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.bar-fill:hover {
+  background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+  transform: scaleY(1.05);
+  transform-origin: bottom;
 }
 
 .bar-label {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--muted-text);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* Bar value tooltip */
+.bar-fill:after {
+  content: attr(data-value) " kWh";
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: var(--surface);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.bar-fill:hover:after {
+  opacity: 1;
+}
+
+/* Animations for savings page */
+.fade-in-tip {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-bar {
+  animation: growBar 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes growBar {
+  from {
+    height: 0 !important;
+  }
+  to {
+    /* Height will be set by the style attribute */
+  }
 }
 
 /* Schedule View */
@@ -767,20 +927,51 @@ body {
   color: white;
 }
 
-/* Mobile-style Horizontal Carousel */
-.room-cards {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 1rem !important;
-  overflow-x: auto !important;
-  scroll-snap-type: x mandatory !important;
-  -webkit-overflow-scrolling: touch !important;
-  padding: 1rem 0 !important;
-  position: relative;
-  min-height: 250px;
+/* Responsive Design */
+@media (max-width: 768px) {
+  #home-view {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "header"
+      "sidebar"
+      "main";
+  }
+  
+  .card-stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    position: static;
+    max-height: none;
+  }
+  
+  .card-stack .eco-card,
+  .card-stack .settings-card {
+    height: 120px;
+    min-height: 120px;
+  }
+  
+  .room-cards {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  
+  .room-card {
+    height: 250px;
+  }
 }
-.room-cards::-webkit-scrollbar {
-  display: none !important;
+
+@media (max-width: 480px) {
+  #home-view {
+    gap: 1rem;
+  }
+  
+  .card-stack {
+    grid-template-columns: 1fr;
+  }
+  
+  .room-cards {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Loading States */
@@ -903,16 +1094,6 @@ body {
 
 .full-width {
   width: 100% !important;
-}
-/* Each card gets its own column */
-.room-card,
-.eco-card,
-.settings-card,
-.add-card,
-.more-card {
-  flex: 0 0 30% !important;
-  max-width: 30% !important;
-  scroll-snap-align: start !important;
 }
 
 /* Lighting Preview */
@@ -1106,7 +1287,7 @@ body {
   user-select: none;
 }
 
-/* Toggle Switch Styles */
+/* Enhanced Toggle Switch with smooth sliding animation */
 .toggle-container {
   display: flex;
   align-items: center;
@@ -1134,10 +1315,10 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #e0e0e0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: var(--toggle-off-color);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   border-radius: var(--toggle-height);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .slider:before {
@@ -1149,8 +1330,9 @@ body {
   bottom: var(--toggle-padding);
   background-color: white;
   border-radius: 50%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1);
 }
 
 input:checked + .slider {
@@ -1158,9 +1340,27 @@ input:checked + .slider {
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 2px var(--toggle-on-color);
+  box-shadow: 0 0 8px var(--toggle-on-color);
 }
 
 input:checked + .slider:before {
-  transform: translateX(calc(var(--toggle-width) - var(--toggle-height)));
+  transform: translateX(calc(var(--toggle-width) - var(--toggle-height))) scale(1.1);
+}
+
+/* Special eco slider styling */
+.eco-slider {
+  background: linear-gradient(135deg, #ff4757, #ff6b7a);
+}
+
+input:checked + .eco-slider {
+  background: linear-gradient(135deg, #2ed573, #7bed9f);
+}
+
+/* Hover effects */
+.slider:hover {
+  transform: scale(1.02);
+}
+
+input:checked + .slider:hover:before {
+  transform: translateX(calc(var(--toggle-width) - var(--toggle-height))) scale(1.15);
 }

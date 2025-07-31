@@ -13,6 +13,11 @@
         <h1>Welcome back, Kairo</h1>
         <button class="help-btn" aria-label="Help">?</button>
       </header>
+      
+      <!-- Left sidebar stack for Eco & Settings -->
+      <div class="card-stack"></div>
+      
+      <!-- Main room cards area -->
       <div class="room-cards"></div>
     </section>
 
@@ -44,16 +49,27 @@
           <span class="back-icon">←</span>
           <span class="visually-hidden">Back</span>
         </button>
-        <h1>Savings</h1>
+        <h1>Energy Savings</h1>
         <button class="help-btn" aria-label="Help">?</button>
       </header>
       <div class="savings-summary">
-        <p>This Week’s Savings: <strong>– kWh</strong></p>
+        <p>This Week's Total Savings: <strong id="total-savings">-- kWh</strong></p>
+        <p style="font-size: 0.9rem; color: var(--muted-text); margin-top: 8px;">
+          Keep up the great work! Every kWh saved helps the environment.
+        </p>
       </div>
-      <div class="savings-chart"><span>Chart here</span></div>
+      <div class="savings-chart">
+        <div id="savings-chart-container">
+          <span style="display: flex; align-items: center; justify-content: center; height: 200px; color: var(--muted-text);">
+            Loading chart...
+          </span>
+        </div>
+      </div>
       <div class="eco-tips">
-        <h2>Eco Tips</h2>
-        <ul></ul>
+        <h2>💡 Eco Tips</h2>
+        <ul id="eco-tips-list">
+          <li>Loading tips...</li>
+        </ul>
       </div>
     </section>
 

@@ -506,46 +506,69 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Render savings view content
+  // Enhanced savings view rendering
   document
     .querySelector('button[data-view="savings-view"]')
     .addEventListener("click", () => {
-      // Calculate total savings
-      const totalWeeklySavings = savingsData.weeklySavings.reduce(
-        (sum, day) => sum + day,
-        0
-      );
-      const savingsSummary = document.querySelector(
-        ".savings-summary p strong"
-      );
-
-      if (savingsSummary) {
-        savingsSummary.textContent = totalWeeklySavings.toFixed(1) + " kWh";
+      // Show loading state first
+      const chartContainer = document.getElementById('savings-chart-container');
+      const totalSavingsEl = document.getElementById('total-savings');
+      const ecoTipsList = document.getElementById('eco-tips-list');
+      
+      if (chartContainer) {
+        chartContainer.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: center; height: 200px; color: var(--muted-text);">
+            <div class="loader" style="width: 30px; height: 30px; margin-right: 10px;"></div>
+            Loading chart...
+          </div>
+        `;
       }
 
-      // Render eco tips
-      const ecoTipsList = document.querySelector(".eco-tips ul");
+      // Simulate loading delay for better UX
+      setTimeout(() => {
+        // Calculate total savings
+        const totalWeeklySavings = savingsData.weeklySavings.reduce(
+          (sum, day) => sum + day,
+          0
+        );
+        
+        if (totalSavingsEl) {
+          totalSavingsEl.textContent = totalWeeklySavings.toFixed(1) + " kWh";
+        }
 
-      if (ecoTipsList) {
-        ecoTipsList.innerHTML = "";
-        savingsData.ecoTips.forEach((tip) => {
-          const li = document.createElement("li");
-          li.textContent = tip;
-          ecoTipsList.appendChild(li);
-        });
-      }
+        // Render eco tips with enhanced styling
+        if (ecoTipsList) {
+          ecoTipsList.innerHTML = "";
+          savingsData.ecoTips.forEach((tip, index) => {
+            const li = document.createElement("li");
+            li.textContent = tip;
+            li.style.animationDelay = `${index * 0.1}s`;
+            li.classList.add('fade-in-tip');
+            ecoTipsList.appendChild(li);
+          });
+        }
 
-      // Render basic chart
-      renderSavingsChart();
+        // Render enhanced chart
+        renderSavingsChart();
+        
+        // Add fade-in animation to chart bars
+        setTimeout(() => {
+          document.querySelectorAll('.bar-fill').forEach((bar, index) => {
+            bar.style.animationDelay = `${index * 0.1}s`;
+            bar.classList.add('animate-bar');
+          });
+        }, 100);
+      }, 500);
     });
 
-  // Simple chart rendering function
+  // Simplified chart rendering function with static heights
   function renderSavingsChart() {
-    const chartContainer = document.querySelector(".savings-chart");
+    const chartContainer = document.getElementById('savings-chart-container');
     if (!chartContainer) return;
 
-    const maxSaving = Math.max(...savingsData.weeklySavings);
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    // Static heights based on savings data values [2.3, 1.8, 2.7, 2.0, 3.1, 2.5, 1.9]
+    const staticHeights = [92, 72, 108, 80, 124, 100, 76]; // Heights in pixels that visually represent the data
 
     chartContainer.innerHTML = `
       <div class="chart">
@@ -553,9 +576,9 @@ document.addEventListener("DOMContentLoaded", () => {
           .map(
             (saving, i) => `
           <div class="chart-bar">
-            <div class="bar-fill" style="height: ${
-              (saving / maxSaving) * 100
-            }%"></div>
+            <div class="bar-fill" 
+                 style="height: ${staticHeights[i]}px;" 
+                 data-value="${saving.toFixed(1)}"></div>
             <div class="bar-label">${days[i]}</div>
           </div>
         `
@@ -564,15 +587,17 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
   }
-  // --- Room Card Rendering ---
+  // --- Room Card Rendering with New Layout ---
   const cardsContainer = document.querySelector(".room-cards");
+  const stackContainer = document.querySelector(".card-stack");
 
-  // Enhanced renderRoomCards with loading state
+  // Enhanced renderRoomCards with fixed layout
   const originalRenderRoomCards = function renderRoomCards() {
-    cardsContainer.innerHTML = ""; // Eco + Settings stack
-    const stack = document.createElement("div");
-    stack.className = "card-stack";
-    // Create Eco Mode card with enhanced toggle
+    // Clear both containers
+    cardsContainer.innerHTML = "";
+    stackContainer.innerHTML = "";
+    
+    // Create Eco Mode card
     const ecoCard = document.createElement("article");
     ecoCard.className = "room-card eco-card";
     ecoCard.innerHTML = `
@@ -589,24 +614,13 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     // Get saved eco mode setting
-    const savingsData = getSavingsData ? getSavingsData() : { ecoMode: false };
+    const currentSavingsData = getSavingsData ? getSavingsData() : { ecoMode: false };
     const ecoToggle = ecoCard.querySelector("#eco-toggle");
-    ecoToggle.checked = savingsData.ecoMode;
+    ecoToggle.checked = currentSavingsData.ecoMode;
+    
     // Add eco toggle functionality
     ecoToggle.addEventListener("change", (e) => {
       const isEcoOn = e.target.checked;
-
-      // Update toggle visual appearance
-      const slider = ecoToggle.nextElementSibling;
-      if (isEcoOn) {
-        slider.style.backgroundColor = "#4CAF50"; // Green when on
-        slider.style.transition =
-          "background-color 0.3s ease, transform 0.3s ease";
-      } else {
-        slider.style.backgroundColor = "#f44336"; // Red when off
-        slider.style.transition =
-          "background-color 0.3s ease, transform 0.3s ease";
-      }
 
       if (
         typeof getSavingsData === "function" &&
@@ -633,29 +647,36 @@ document.addEventListener("DOMContentLoaded", () => {
       // Re-render cards with updated settings
       renderRoomCards();
     });
-    stack.appendChild(ecoCard);
+    
+    stackContainer.appendChild(ecoCard);
+    
+    // Create Settings card
     const settingsCard = document.createElement("article");
     settingsCard.className = "room-card settings-card";
-    settingsCard.innerHTML = `<button class="settings-btn" aria-label="Settings">⚙️ Settings</button>`;
-    stack.appendChild(settingsCard);
-    cardsContainer.appendChild(stack);
-    // Room cards
+    settingsCard.innerHTML = `
+      <div class="card-header"><h2>Settings</h2></div>
+      <div class="card-content">
+        <button class="settings-btn" aria-label="Settings">⚙️ Preferences</button>
+      </div>
+    `;
+    stackContainer.appendChild(settingsCard);
+
+    // Create room cards in the main scrollable area
     rooms.forEach((room) => {
       const card = document.createElement("article");
       card.className = "room-card";
       card.dataset.room = room.name.toLowerCase().replace(/\s+/g, "-");
       card.innerHTML = `
         <div class="card-header"><h2>${room.name}</h2></div>
-        <p class="lighting-mode"><span class="mode-label">Lighting Mode:</span> <em class="mode-value">${
-          room.mode
-        }</em></p>
-        <div class="icon-row">
-          <span class="icon bulb-icon ${
-            room.mode === "Off" ? "" : "active"
-          }">💡</span>
-          <button class="occupancy-toggle icon occupancy-icon" aria-pressed="${
-            room.occupancy
-          }" aria-label="Toggle occupancy">👥</button>
+        <p class="lighting-mode">
+          <span class="mode-label">Lighting Mode:</span> 
+          <em class="mode-value">${room.mode}</em>
+        </p>
+        <div class="icon-row" style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0;">
+          <span class="icon bulb-icon ${room.mode === "Off" ? "" : "active"}">💡</span>
+          <button class="occupancy-toggle icon occupancy-icon ${room.occupancy ? "active" : ""}" 
+                  aria-pressed="${room.occupancy}" 
+                  aria-label="Toggle occupancy">👥</button>
         </div>
         <button class="adjust-btn">Adjust</button>
       `;
@@ -670,14 +691,8 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         if (roomIndex !== -1) {
           rooms[roomIndex].occupancy = !rooms[roomIndex].occupancy;
-          occupancyToggle.setAttribute(
-            "aria-pressed",
-            rooms[roomIndex].occupancy
-          );
-          occupancyToggle.classList.toggle(
-            "active",
-            rooms[roomIndex].occupancy
-          );
+          occupancyToggle.setAttribute("aria-pressed", rooms[roomIndex].occupancy);
+          occupancyToggle.classList.toggle("active", rooms[roomIndex].occupancy);
           saveRooms(rooms);
         }
       });
@@ -688,78 +703,68 @@ document.addEventListener("DOMContentLoaded", () => {
         showRoomModal(card.dataset.room);
       });
     });
-    // Add card
+    
+    // Add "Add Room" card
     const addCard = document.createElement("article");
     addCard.className = "room-card add-card";
-    addCard.innerHTML = `<button id="add-room-btn">+ Add</button>`;
+    addCard.innerHTML = `
+      <div class="card-header"><h2>Add New Room</h2></div>
+      <div class="card-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+        <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.6;">+</div>
+        <button id="add-room-btn" style="background: none; border: none; color: var(--accent); font-size: 1rem; cursor: pointer;">Add Room</button>
+      </div>
+    `;
     cardsContainer.appendChild(addCard);
-    // More card
-    const moreCard = document.createElement("article");
-    moreCard.className = "room-card more-card";
-    moreCard.innerHTML = `<button id="more-rooms-btn">&gt; More</button>`;
-    cardsContainer.appendChild(moreCard);
-    // Attach adjust listeners
-    cardsContainer.querySelectorAll(".adjust-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        showRoomModal(btn.closest(".room-card").dataset.room);
-      });
+
+    // Add room functionality
+    addCard.querySelector("#add-room-btn").addEventListener("click", () => {
+      const roomNamePrompt = () => {
+        window.UI.modal(
+          "Add New Room",
+          `<div>
+            <label for="new-room-name">Room Name:</label>
+            <input type="text" id="new-room-name" class="full-width" placeholder="Enter room name">
+          </div>`,
+          {
+            confirmText: "Add Room",
+            onConfirm: () => {
+              const nameInput = document.getElementById("new-room-name");
+              const name = nameInput?.value?.trim();
+
+              if (!name) {
+                window.UI.toast("Please enter a room name", "error");
+                setTimeout(roomNamePrompt, 500);
+                return;
+              }
+
+              if (rooms.some((r) => r.name.toLowerCase() === name.toLowerCase())) {
+                window.UI.toast("A room with this name already exists", "error");
+                setTimeout(roomNamePrompt, 500);
+                return;
+              }
+
+              rooms.push({
+                name,
+                mode: "Off",
+                brightness: 0,
+                temp: 2700,
+                occupancy: false,
+              });
+              saveRooms(rooms);
+              window.UI.toast(`Room "${name}" has been added`, "success");
+              renderRoomCards();
+            },
+          }
+        );
+
+        // Focus the input after modal is shown
+        setTimeout(() => {
+          document.getElementById("new-room-name")?.focus();
+        }, 100);
+      };
+
+      roomNamePrompt();
     });
-    // Add room listener
-    cardsContainer
-      .querySelector("#add-room-btn")
-      .addEventListener("click", () => {
-        const roomNamePrompt = () => {
-          window.UI.modal(
-            "Add New Room",
-            `<div>
-              <label for="new-room-name">Room Name:</label>
-              <input type="text" id="new-room-name" class="full-width" placeholder="Enter room name">
-            </div>`,
-            {
-              confirmText: "Add Room",
-              onConfirm: () => {
-                const nameInput = document.getElementById("new-room-name");
-                const name = nameInput?.value?.trim();
-
-                if (!name) {
-                  window.UI.toast("Please enter a room name", "error");
-                  setTimeout(roomNamePrompt, 500);
-                  return;
-                }
-
-                if (
-                  rooms.some((r) => r.name.toLowerCase() === name.toLowerCase())
-                ) {
-                  window.UI.toast(
-                    "A room with this name already exists",
-                    "error"
-                  );
-                  setTimeout(roomNamePrompt, 500);
-                  return;
-                }
-
-                rooms.push({
-                  name,
-                  mode: "Off",
-                  brightness: 0,
-                  temp: 2700,
-                  occupancy: false,
-                });
-                saveRooms(rooms);
-                window.UI.toast(`Room "${name}" has been added`, "success");
-                renderRoomCards();
-              },
-            }
-          );
-
-          // Focus the input after modal is shown
-          setTimeout(() => {
-            document.getElementById("new-room-name")?.focus();
-          }, 100);
-        };
-
-        roomNamePrompt();
-      });
   };
 
   // Replace with enhanced version that includes loading states
@@ -1267,13 +1272,14 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       }
     );
-  }); // Save schedule
+  }); // Enhanced save schedule functionality
   document.getElementById("save-schedule-btn").addEventListener("click", () => {
     // Check for any new schedule entries that need to be added
     const newScheduleRows = Array.from(
       document.querySelectorAll(".new-schedule-row")
     );
     let invalidEntries = false;
+    let validNewEntries = [];
 
     if (newScheduleRows.length > 0) {
       newScheduleRows.forEach((row) => {
@@ -1284,7 +1290,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const enabled = row.querySelector(".new-enabled").checked;
 
         if (day && startTime && endTime) {
-          tempSchedule.push({ day, startTime, mode, endTime, enabled });
+          // Validate time order
+          if (startTime < endTime) {
+            validNewEntries.push({ day, startTime, mode, endTime, enabled });
+          } else {
+            invalidEntries = true;
+          }
         } else if (startTime || endTime) {
           // If they've started filling out the row but didn't complete it
           invalidEntries = true;
@@ -1294,19 +1305,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (invalidEntries) {
       window.UI.modal(
-        "Incomplete Entries",
-        "Some new schedule entries are incomplete and will not be saved. Would you like to continue?",
+        "Incomplete or Invalid Entries",
+        "Some new schedule entries are incomplete or have invalid times (start time must be before end time). Would you like to continue saving only the valid entries?",
         {
-          confirmText: "Save Anyway",
+          confirmText: "Save Valid Entries",
           cancelText: "Go Back & Fix",
-          onConfirm: () => saveScheduleWithFeedback(),
+          onConfirm: () => saveScheduleWithFeedback(validNewEntries),
         }
       );
     } else {
-      saveScheduleWithFeedback();
+      saveScheduleWithFeedback(validNewEntries);
     }
 
-    function saveScheduleWithFeedback() {
+    function saveScheduleWithFeedback(newEntries = []) {
       // Show saving indicator
       const saveBtn = document.getElementById("save-schedule-btn");
       const originalText = saveBtn.textContent;
@@ -1315,18 +1326,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Simulate network delay (remove in production)
       setTimeout(() => {
-        schedule = JSON.parse(JSON.stringify(tempSchedule)); // Deep copy
+        // Add new valid entries to tempSchedule
+        tempSchedule.push(...newEntries);
+        
+        // Create a deep copy and save to localStorage
+        schedule = JSON.parse(JSON.stringify(tempSchedule));
         saveSchedule(schedule);
         scheduleChanged = false;
-        renderSchedule(); // Rerender to update the list and remove new-schedule-row entries
+        
+        // Rerender to update the list and remove new-schedule-row entries
+        renderSchedule(); 
         updateSaveButtonStatus();
 
         // Reset button
         saveBtn.innerHTML = originalText;
         saveBtn.disabled = false;
 
-        // Show success message
-        window.UI.toast("Schedule saved successfully!", "success");
+        // Show success message with count
+        const savedCount = newEntries.length;
+        if (savedCount > 0) {
+          window.UI.toast(`Schedule saved successfully! Added ${savedCount} new ${savedCount === 1 ? 'entry' : 'entries'}.`, "success");
+        } else {
+          window.UI.toast("Schedule saved successfully!", "success");
+        }
       }, 600);
     }
   });
