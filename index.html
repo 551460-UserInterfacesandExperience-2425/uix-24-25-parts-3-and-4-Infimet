@@ -88,46 +88,42 @@
       </div>
     </section>
 
-    <!-- Room Control -->
-    <section id="room-control-view" class="view" aria-label="Room Control">
-      <div class="overlay"></div>
-      <div class="control-sheet">
-        <header class="control-header">
-          <button class="back-btn" aria-label="Go back to previous view">
-            <span class="back-icon">←</span>
-            <span class="visually-hidden">Back</span>
-          </button>
-          <h1 id="control-room-name">Room Name</h1>
-          <button class="help-btn" aria-label="Help">?</button>
+    <!-- Room Control Modal -->
+    <div class="modal-overlay" id="room-control-modal" style="display: none;">
+      <div class="modal-sheet">
+        <header class="modal-header">
+          <h2 id="room-modal-title">Room Name</h2>
+          <button id="room-modal-close" aria-label="Close">✕</button>
         </header>
-        <div class="control-body">
+        <div class="modal-body">
           <div class="control-row">
-            <label for="brightness-range">Brightness</label>
-            <input type="range" id="brightness-range" min="0" max="100" />
+            <label for="modal-brightness-range">Brightness</label>
+            <input type="range" id="modal-brightness-range" min="0" max="100" />
           </div>
           <div class="control-row">
-            <label for="temp-range">Colour Temperature</label>
-            <input type="range" id="temp-range" min="2000" max="6500" />
+            <label for="modal-temp-range">Colour Temperature</label>
+            <input type="range" id="modal-temp-range" min="2000" max="6500" />
           </div>
           <div class="control-row">
-            <label for="mode-select">Lighting Mode</label>
-            <select id="mode-select">
+            <label for="modal-mode-select">Lighting Mode</label>
+            <select id="modal-mode-select">
               <option>Dimmed Warm</option>
               <option>Cool White</option>
               <option>Productivity</option>
+              <option>Off</option>
             </select>
           </div>
           <div class="control-row">
-            <label for="occupancy-toggle">Auto-Detect Occupancy</label>
-            <input type="checkbox" id="occupancy-toggle" />
+            <label for="modal-occupancy-toggle">Auto-Detect Occupancy</label>
+            <input type="checkbox" id="modal-occupancy-toggle" />
           </div>
         </div>
-        <footer class="control-footer">
-          <button id="apply-btn">Apply</button>
-          <button id="save-btn">Save</button>
+        <footer class="modal-footer">
+          <button id="modal-cancel-btn" class="btn-secondary">Cancel</button>
+          <button id="modal-apply-btn" class="btn-primary">Apply</button>
         </footer>
       </div>
-    </section>
+    </div>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav" aria-label="Main navigation">

@@ -39,9 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Room Control Modal Functions
-  function showModal(roomId) {
+  function showRoomModal(roomId) {
     const modal = document.getElementById("room-control-modal");
-    const homeView = document.getElementById("home-view");
+    const activeView = document.querySelector(".view.active");
     const room = rooms.find(
       (r) => r.name.toLowerCase().replace(/\s+/g, "-") === roomId
     );
@@ -67,26 +67,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     modal.style.display = "flex";
-    homeView.classList.add("blurred");
+    if (activeView) {
+      activeView.classList.add("blurred");
+    }
   }
 
-  function closeModal() {
+  function closeRoomModal() {
     const modal = document.getElementById("room-control-modal");
-    const homeView = document.getElementById("home-view");
     modal.style.display = "none";
-    homeView.classList.remove("blurred");
+    document.querySelectorAll(".view.active").forEach(view => {
+      view.classList.remove("blurred");
+    });
   }
 
   // Setup modal close button
   const roomModalClose = document.getElementById("room-modal-close");
   if (roomModalClose) {
-    roomModalClose.addEventListener("click", closeModal);
+    roomModalClose.addEventListener("click", closeRoomModal);
   }
 
   // Setup modal cancel button
   const roomModalCancelBtn = document.getElementById("modal-cancel-btn");
   if (roomModalCancelBtn) {
-    roomModalCancelBtn.addEventListener("click", closeModal);
+    roomModalCancelBtn.addEventListener("click", closeRoomModal);
   }
 
   // Setup apply button
@@ -122,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast(`Updated settings for ${rooms[roomIndex].name}`, "success");
       }
 
-      closeModal();
+      closeRoomModal();
     });
   }
 
@@ -131,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (roomControlModal) {
     roomControlModal.addEventListener("click", function (e) {
       if (e.target === this) {
-        closeModal();
+        closeRoomModal();
       }
     });
   }
@@ -682,7 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Add adjust button functionality
       const adjustBtn = card.querySelector(".adjust-btn");
       adjustBtn.addEventListener("click", () => {
-        showModal(card.dataset.room);
+        showRoomModal(card.dataset.room);
       });
     });
     // Add card
@@ -698,7 +701,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Attach adjust listeners
     cardsContainer.querySelectorAll(".adjust-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        showRoomControl(btn.closest(".room-card").dataset.room);
+        showRoomModal(btn.closest(".room-card").dataset.room);
       });
     });
     // Add room listener
@@ -963,7 +966,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <button class="adjust-btn">Adjust</button>
       `;
       li.querySelector(".adjust-btn").addEventListener("click", () => {
-        showRoomControl(room.name.toLowerCase().replace(/\s+/g, "-"));
+        showRoomModal(room.name.toLowerCase().replace(/\s+/g, "-"));
       });
       roomList.appendChild(li);
     });
@@ -1409,51 +1412,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   function showRoomControl(key) {
-    currentRoomKey = key;
-    const room = rooms.find(
-      (r) => r.name.toLowerCase().replace(/\s+/g, "-") === key
-    );
-    tempRoomState = { ...room };
-    document.getElementById("control-room-name").textContent = room.name;
-    document.getElementById("mode-select").value = room.mode;
-    document.getElementById("brightness-range").value = room.brightness;
-    document.getElementById("temp-range").value = room.temp;
-    document.getElementById("occupancy-toggle").checked = room.occupancy; // Add remove button if not present
-    let removeBtn = document.getElementById("remove-room-btn");
-    if (!removeBtn) {
-      removeBtn = document.createElement("button");
-      removeBtn.id = "remove-room-btn";
-      removeBtn.textContent = "Remove Room";
-      removeBtn.style = "margin-top:12px;background:#e74c3c;color:#fff;";
-      document.querySelector(".control-footer").appendChild(removeBtn);
-      removeBtn.addEventListener("click", () => {
-        const roomName = rooms.find(
-          (r) => r.name.toLowerCase().replace(/\s+/g, "-") === currentRoomKey
-        )?.name;
-        window.UI.modal(
-          "Remove Room",
-          `Are you sure you want to remove ${
-            roomName || "this room"
-          }? This action cannot be undone.`,
-          {
-            confirmText: "Remove",
-            cancelText: "Cancel",
-            confirmClass: "btn-danger",
-            onConfirm: () => {
-              rooms = rooms.filter(
-                (r) =>
-                  r.name.toLowerCase().replace(/\s+/g, "-") !== currentRoomKey
-              );
-              saveRooms(rooms);
-              renderRoomCards();
-              switchView("home-view");
-              window.UI.toast(`${roomName || "Room"} was removed`, "success");
-            },
-          }
-        );
-      });
-    }
-    switchView("room-control-view");
+    showRoomModal(key);
   }
   // --- Modal Controls Logic ---
   function updateTempRoomStateFromControls() {
